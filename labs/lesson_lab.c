@@ -40,10 +40,10 @@ int main(int argc,char **argv) {
         tutor_result=tutor_add(3,9);checkpoint();
         printf("result=%u\n",tutor_result);if(tutor_result!=12)return 3;
     } else if(strcmp(mode,"copy")==0) {
-        int small=tutor_copy((const unsigned char*)"ABCDEFG",7);
+        int accepted_copy=tutor_copy((const unsigned char*)"ABCDEFG",7);
         int rejected=tutor_copy((const unsigned char*)"ABCDEFGHI",9);
-        tutor_result=(uint32_t)(small==1 && rejected==0);checkpoint();
-        printf("small=%d oversized_accepted=%d result=%u\n",small,rejected,tutor_result);
+        tutor_result=(uint32_t)(accepted_copy==1 && rejected==0);checkpoint();
+        printf("small=%d oversized_accepted=%d result=%u\n",accepted_copy,rejected,tutor_result);
         if(!tutor_result)return 4;
     } else if(strcmp(mode,"branch")==0) {
         tutor_result=(uint32_t)tutor_dispatch(3,0x46);checkpoint();

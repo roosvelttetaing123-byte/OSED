@@ -19,6 +19,12 @@ jobs:
           node-version: '22'
       - name: Test original learning engine
         run: npm test
+      - name: Compile original 32-bit practice targets
+        shell: cmd
+        run: |
+          call "%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars32.bat"
+          if errorlevel 1 exit /b 1
+          call labs\build.cmd
       - name: Prepare assets and desktop toolchain
         run: |
           python scripts/icon.py
@@ -29,12 +35,6 @@ jobs:
         run: cargo test --release --manifest-path src-tauri/Cargo.toml
       - name: Build Windows executable and installer
         run: npm run desktop:build
-      - name: Compile original 32-bit practice targets
-        shell: cmd
-        run: |
-          call "%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars32.bat"
-          if errorlevel 1 exit /b 1
-          call labs\build.cmd
       - name: Install and smoke-test persistence and real WebView startup
         shell: pwsh
         run: |
