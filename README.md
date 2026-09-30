@@ -1,49 +1,39 @@
-# OSED Forge — Guided Learning 0.2
+# OSED Forge — Study desk 0.3
 
-A Windows desktop teaching companion, not a PDF-reading checklist.
+A Windows desktop study companion that teaches one idea at a time.
 
-**Learn → Watch → Guided → Solo → Remember → Windows practice**
+**Today -> Start lesson -> Understand -> Example -> Practice -> Recap**
 
-57 original short lessons explain core concepts from the uploaded EXP-301 v1.0 syllabus. Each lesson includes an explanation, simpler analogy, worked example, checked model practice, changed solo case and a reflection. Source references are optional and scoped to the current concept. No course PDF, vendor payload or proprietary target is distributed.
+Download `OSED-Forge-Setup.exe` from Releases. Export a backup and close the previous app before upgrading. The app retains the same SQLite location; existing progress is preserved. The installer is unsigned. Keep security protections enabled and verify SHA256SUMS. WebView2 may need internet during setup; lessons then work offline.
 
-## Install
+## A quieter place to study
 
-Download `OSED-Forge-Setup.exe` from Releases. The installer is unsigned; keep your security tools enabled and verify SHA256SUMS. WebView2 may require internet during first installation. The authored lessons work offline afterward. `OSED-Forge.exe` is the standalone application when WebView2 is already available.
+Today has one recommended next lesson. New students begin with bytes and addresses, without a PDF assignment or a VM setup requirement. Opening a lesson hides the workspace navigation. Four simple stages guide you through an explanation, a stepwise example, supported and independent questions, and a short recap.
 
-The application is Windows x64; the practice programs are Windows x86. Extract the separate `OSED-Forge-Foundation-Labs.zip` in a disposable study VM. The new `lesson_lab.exe` has memory, call, copy, branch and handled-exception modes. The app teaches its steps and expected observations one action at a time.
+Dark mode and light mode have the same readable layout. A visible toggle switches them instantly. Settings also offers System, which follows your OS preference. Theme and lesson text size are saved locally before the next render; they do not require an account.
 
-## What this actually teaches
+Course groups lessons into small units. Review only brings back completed concepts. Notebook stores your recaps and Windows observations. The detailed source map remains available behind Course instead of dominating the study interface.
 
-- Addresses, values, bytes, register views, pointers, stack movement and function returns.
-- WinDbg memory displays, symbols, structures, edits, searches, breakpoints, stepping and calculations.
-- Stack corruption reasoning, offsets, input constraints, decoder workspace and SEH distinctions.
-- Static/dynamic analysis, staged buffers, page probes and portability assumptions.
-- Calling conventions, loader pointer chains, export-array lookup, rotations, byte constraints and runtime anchors.
-- Input-path analysis, DEP permissions, ROP stack accounting, call-frame layout, ASLR leaks and decoder ordering.
-- Format-string roles, observable reads, count writes, multi-byte timing and stack pivots.
+## Content and limitations
 
-These are **concept lessons and deliberately simplified models**, not 57 complete native exploit labs. Five original WinDbg walkthroughs connect foundations to a real observation executable. The older five foundation programs are retained.
+57 original authored concept lessons remain available: 56 on the main study path and the orientation guide through source references. The source map inventories 375 headings in the supplied EXP-301 v1.0 edition, including 144 exercise/extra-mile groups. Mapping a heading does not mean its native exercise is implemented.
 
-## Honest source coverage
+Five WinDbg walkthroughs connect foundations to the original `lesson_lab.exe` observation program. Its memory, call, copy, branch and handled-exception modes are in the separate foundation lab pack, along with the previous five programs. The v0.2 lab pack is compatible with this UI update. Use a disposable Windows study VM.
 
-The coverage view inventories all 375 headings in the supplied edition's table of contents, including 144 exercise/extra-mile groups. It distinguishes a related concept lesson from detailed teaching still pending and a native exercise not converted. A heading in the inventory does not mean its whole subsection has been taught, implemented or verified. Complete case-by-case conversion of the 604-page course and the advanced exploit targets remains unfinished.
+Advanced native exploit targets and case-by-case conversion of every course exercise remain unfinished. Simplified model checks are not an exploit certification. Free-text notes are not AI-graded. No live AI service, phone sync or background reminder service is included. No course PDF, proprietary targets, vendor solutions or credentials are bundled.
 
-Original explanations preserve course terminology. Original numerical examples, models and Windows-program instructions are labelled separately. Source ambiguities (such as the string-capacity boundary or jump-offset wording) are not silently presented as authoritative corrections. Current provider access/exam policies are not inferred from the old coursebook.
+## Data
 
-## Your existing progress
+The application identifier and `progress.sqlite3` location are unchanged. The v1 journal envelope retains the teaching field from v0.2. Old notes, attempts and sessions remain in the journal and full backup. Import validates and replaces; it does not merge. Avoid reopening older versions against the upgraded journal. Appearance preferences are device-local and separate from journal backups.
 
-The application identifier and `progress.sqlite3` location are unchanged. The v1 journal envelope is retained with an additional validated `teaching` field. Previous chapter notes, sessions, attempts and quizzes survive migration; they do not automatically become new lesson passes. Export a full backup before upgrading. Do not reopen the older v0.1 executable against your upgraded journal. JSON import replaces rather than merges data and requires confirmation.
-
-Learning assistance is explicit. Worked solutions, hints and repeated tries cannot be counted as a fresh first-try solo check. Free-text reflections and Windows notes are self-reported, not automatically graded. Reviews draw only from concept lessons already completed.
-
-## Develop and test
+## Development
 
 ```sh
 npm test
 python -m http.server 8080 --directory web
 ```
 
-On Windows with the Tauri prerequisites installed:
+Windows, with the Tauri prerequisites installed:
 
 ```sh
 npm install --ignore-scripts
@@ -52,8 +42,6 @@ cargo test --release --manifest-path src-tauri/Cargo.toml
 npm run desktop:build
 ```
 
-Build x86 observation programs by running `labs/build.cmd` from a Visual Studio x86 developer command prompt. The automated Windows workflow compiles them, runs normal-output checks, builds/installs the desktop app, checks SQLite persistence and checks actual WebView startup. No claim of complete manual Windows or iPhone QA is made.
+Build x86 observation programs using `labs/build.cmd` in a Visual Studio x86 developer command prompt. GitHub Actions compiles them, builds and installs the desktop app, checks real SQLite persistence and checks WebView startup plus theme switching.
 
-## Boundaries
-
-No live AI tutor, API key, account, phone sync, background reminder service or automated exploit grader is included. The responsive UI can be previewed on mobile, but that does not synchronize your Windows database. Educational model checks are not exam-pass predictions.
+`tests/ui/check_student_flow.py` provides offline Chromium UI QA with a mocked native bridge. Install Python Playwright and its Chromium browser, or set `CHROMIUM_PATH`. Output goes to `qa-output/` (override using `OSED_QA_OUT`). It is not a substitute for complete manual Windows/iPhone QA. See `docs/STUDY_DESIGN.md` for design decisions and `docs/UI_QA.json` for the recorded local checks.

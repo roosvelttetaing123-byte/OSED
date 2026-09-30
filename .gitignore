@@ -15,3 +15,6 @@ release/
 *.backup.json
 personal/
 labs/bin/
+
+qa-output/
+__pycache__/

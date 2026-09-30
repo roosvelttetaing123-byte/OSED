@@ -1,0 +1,32 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import {freshState,ensureRecord,complete,submit} from '../web/tutor/state.js';
+import {exercise} from '../web/tutor/models.js';
+import {lessons} from '../web/tutor/catalog.js';
+import {studyPath,units,recommended,nextLesson,progress,phaseFor,phaseAllowed,displayTitle,goalFor} from '../web/tutor/study.js';
+function passed(s,l){const r=ensureRecord(s,l.id,'test-'+l.id);for(const part of ['guided','solo'])submit(r,part,l.kind,String(exercise(l.kind,r[part].seed).answer));r.reflection='I can explain this idea in my own words.';complete(r,'2026-10-01');return r;}
+test('study: every non-orientation lesson belongs to exactly one unit',()=>{const ids=units.flatMap(u=>u.ids);assert.equal(ids.length,56);assert.equal(new Set(ids).size,56);assert.deepEqual([...ids].sort(),studyPath.map(l=>l.id).sort());assert.equal(lessons.length,57);});
+test('study: first-time learners start with bytes, not workflow terminology',()=>assert.equal(recommended(freshState()).id,'bytes'));
+test('study: started lesson resumes',()=>{const s=freshState();s.teaching.selected='pointers';ensureRecord(s,'pointers','pointer').step=3;assert.equal(recommended(s).id,'pointers');});
+test('study: completed selected lesson does not trap student in an endless loop',()=>{const s=freshState();s.teaching.selected='bytes';passed(s,studyPath[0]);assert.equal(recommended(s).id,'registers');});
+test('study: full completion returns no fictional next lesson',()=>{const s=freshState();for(const l of studyPath)passed(s,l);assert.equal(recommended(s),null);assert.deepEqual(progress(s),{done:56,total:56});});
+test('study: next lesson follows actual route',()=>{for(let i=0;i<studyPath.length;i++)assert.equal(nextLesson(studyPath[i].id)?.id,studyPath[i+1]?.id);assert.equal(nextLesson('welcome').id,'bytes');});
+test('study: four phases retain all original practice steps',()=>assert.deepEqual([0,1,2,3,4,5].map(phaseFor),[0,1,2,2,3,3]));
+test('study: recap requires independent question, not a cosmetic navigation click',()=>{const s=freshState(),l=studyPath[0],r=ensureRecord(s,l.id,'gates');assert.equal(phaseAllowed(r,3),false);passed(s,l);assert.equal(phaseAllowed(r,3),true);});
+test('study: all lessons have human-readable titles and goals',()=>{for(const l of studyPath){assert.ok(displayTitle(l).length>5);assert.ok(goalFor(l).length>10);}});
+function themeTest(prefs={},dark=false,deny=false){const listeners={},values={...prefs},root={dataset:{},style:{}},media={matches:dark,addEventListener:(type,fn)=>listeners.media=fn};const context={document:{documentElement:root,querySelector:()=>({setAttribute(){}})},localStorage:{getItem:k=>{if(deny)throw Error('Unavailable');return values[k]||null;},setItem:(k,v)=>{if(deny)throw Error('Unavailable');values[k]=v;}},CustomEvent:class{constructor(type,init){this.type=type;this.detail=init?.detail;}},window:{matchMedia:()=>media,dispatchEvent(){},addEventListener:(type,fn)=>listeners[type]=fn}};vm.runInNewContext(fs.readFileSync(new URL('../web/tutor/theme.js',import.meta.url),'utf8'),context);return {api:context.window.ForgeAppearance,root,values,media,listeners};}
+test('theme: default follows a light system before UI render',()=>assert.equal(themeTest().root.dataset.theme,'light'));
+test('theme: default follows a dark system before UI render',()=>assert.equal(themeTest({},true).root.dataset.theme,'dark'));
+test('theme: saved explicit preference wins over the system',()=>assert.equal(themeTest({'osed-forge-theme':'light'},true).root.dataset.theme,'light'));
+test('theme: toggle persists and updates native form color-scheme',()=>{const t=themeTest();t.api.toggle();assert.equal(t.values['osed-forge-theme'],'dark');assert.equal(t.root.style.colorScheme,'dark');});
+test('theme: system changes are live when System is selected',()=>{const t=themeTest();t.media.matches=true;t.listeners.media();assert.equal(t.root.dataset.theme,'dark');});
+test('theme: system changes do not override manual preference',()=>{const t=themeTest({'osed-forge-theme':'dark'});t.media.matches=false;t.listeners.media();assert.equal(t.root.dataset.theme,'dark');});
+test('theme: System can be restored after manual toggle',()=>{const t=themeTest();t.api.toggle();t.api.setTheme('system');assert.equal(t.root.dataset.theme,'light');});
+test('theme: invalid stored values fall back safely',()=>{const t=themeTest({'osed-forge-theme':'garbage','osed-forge-reading-size':'x'});assert.equal(t.api.get().preference,'system');assert.equal(t.api.get().size,'medium');});
+test('theme: storage denial does not prevent studying',()=>{const t=themeTest({},false,true);t.api.toggle();assert.equal(t.root.dataset.theme,'dark');});
+test('theme: reading-size preference persists and is applied immediately',()=>{const t=themeTest();t.api.setSize('large');assert.equal(t.values['osed-forge-reading-size'],'large');assert.equal(t.root.dataset.readingSize,'large');});
+test('theme: invalid commands cannot change appearance',()=>{const t=themeTest();assert.throws(()=>t.api.setTheme('invalid'));assert.throws(()=>t.api.setSize('invalid'));assert.equal(t.root.dataset.theme,'light');});
+test('theme: cross-window changes update appearance',()=>{const t=themeTest();t.listeners.storage({key:'osed-forge-theme',newValue:'dark'});assert.equal(t.root.dataset.theme,'dark');});
+test('theme: styles and production prepaint script are included',()=>{const s=fs.readFileSync(new URL('../web/index.html',import.meta.url),'utf8');assert.ok(s.indexOf('tutor/theme.js')<s.indexOf('tutor/style.css'));const css=fs.readFileSync(new URL('../web/tutor/style.css',import.meta.url),'utf8');assert.match(css,/prefers-reduced-motion/);assert.match(css,/:focus-visible/);assert.match(css,/data-theme=dark/);});

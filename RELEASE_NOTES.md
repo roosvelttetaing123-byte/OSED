@@ -1,17 +1,23 @@
-# OSED Forge 0.2.0 — Guided Learning
+# OSED Forge 0.3 — Study desk
 
-This changes the app from a PDF tracker into a teaching-first experience.
+A student-first redesign with **Dark / Light / System** appearance and adjustable lesson text.
 
-Download **OSED-Forge-Setup.exe**. Upgrade after exporting your existing backup. The application keeps the same local database location; the new validated teaching state preserves the previous journal. Do not run the old v0.1 executable against the upgraded journal.
+**Download OSED-Forge-Setup.exe.** Export a backup, close the old app, and install this version. Your journal uses the same application identifier and SQLite location. Existing lessons, notes and attempts are preserved.
 
-## Included
+## What changed
 
-57 original short concept lessons; simpler explanations; stepwise worked examples; visual pointer/stack states; typed model practice with explanations; different guided/solo cases; assistance-aware concept checks; reflection notes; reviews of already-taught concepts; full 375-heading source inventory; five step-by-step WinDbg walkthroughs and a new original x86 observation executable with five modes. The separate lab pack retains the earlier five programs.
+- Today shows one obvious Start lesson or Continue lesson button.
+- New learners start with Bytes & addresses, not a PDF assignment or an interface quiz.
+- Focused reader removes the dashboard and follows Understand -> Example -> Practice -> Recap.
+- Dark/light toggle stays visible. System mode follows OS changes; explicit choices and reading size persist on this device.
+- Course is grouped into small units. Source coverage is a secondary reference, not the main study screen.
+- Notebook gathers your recaps and observations. Windows walkthroughs remain optional, separate from in-app concept practice.
+- Clear next steps after wrong answers, fresh questions, completion and empty reviews.
 
-## What is not claimed
+## Validation and scope
 
-The 144 source exercise/extra-mile groups and every case-study step are NOT all converted into native labs. Advanced concepts have bounded model exercises, not completed native exploitation challenges. Coverage states remain visible. No proprietary PDF, vendor solutions or targets are included.
+119 Node tests cover existing learning logic, migration, route helpers and appearance. Local Chromium interaction QA covers the complete lesson flow, wrong-answer recovery, notes/export, restart/resume, themes, text size, dialogs and responsive widths (320–1440 px). That local browser QA uses a mocked native storage bridge; Windows CI separately checks real storage, installation, WebView startup and theme switching.
 
-Local Node tests cover lesson content, model arithmetic, migration, saved progress and review constraints. Windows CI additionally runs Rust storage tests, builds/installs the EXE and checks actual WebView startup. Interactive UI testing used an offline Chromium DOM with a mocked native storage bridge; this is not full manual Windows or iPhone validation.
+This is a UI/UX release. The same 57 authored lessons remain (56 on the study path plus orientation) and the same five Windows observation walkthroughs. Advanced native exploit challenges are still unfinished. The v0.2 foundation lab pack is compatible. No new AI service, phone synchronization or background notifications are claimed.
 
-This is an unsigned prerelease. Verify SHA256SUMS; do not disable security software. Missing WebView2 can require internet during setup. No live phone sync, AI service, background push or automated exploit grading is included.
+Unsigned prerelease. Verify SHA256SUMS; do not disable security software. WebView2 may require internet during first installation. Course material, private notes and credentials are not distributed. Appearance preferences stay device-local and are not part of the journal backup.
