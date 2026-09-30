@@ -3,13 +3,13 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['web/**', 'src-tauri/**', 'scripts/**', 'labs/**', 'tests/**', 'package.json']
+    paths: ['web/**', 'src-tauri/**', 'scripts/**', 'labs/**', 'tests/**', 'package.json', '.github/workflows/windows.yml']
 permissions:
   contents: read
 jobs:
   build:
-    runs-on: windows-latest
-    timeout-minutes: 35
+    runs-on: windows-2022
+    timeout-minutes: 40
     permissions:
       contents: write
     steps:
@@ -19,14 +19,14 @@ jobs:
           node-version: '22'
       - name: Test original learning engine
         run: npm test
-      - name: Prepare assets and install desktop build tool
+      - name: Prepare assets and desktop toolchain
         run: |
           python scripts/icon.py
           npm install --ignore-scripts
           rustup update stable
           rustup default stable
       - name: Test transactional storage
-        run: cargo test --manifest-path src-tauri/Cargo.toml
+        run: cargo test --release --manifest-path src-tauri/Cargo.toml
       - name: Build Windows executable and installer
         run: npm run desktop:build
       - name: Compile original 32-bit practice targets
@@ -35,25 +35,30 @@ jobs:
           call "%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars32.bat"
           if errorlevel 1 exit /b 1
           call labs\build.cmd
-      - name: Smoke-test installed application
+      - name: Install and smoke-test persistence and real WebView startup
         shell: pwsh
         run: |
+          $ErrorActionPreference = 'Stop'
           $installer = Get-ChildItem 'src-tauri/target/release/bundle/nsis/*-setup.exe' | Select-Object -First 1
           if (!$installer) { throw 'Installer missing' }
-          $p = Start-Process $installer.FullName -ArgumentList '/S' -Wait -PassThru
+          $p = Start-Process $installer.FullName -ArgumentList '/S' -PassThru
+          if (!$p.WaitForExit(180000)) { $p.Kill(); throw 'Installer timeout' }
           if ($p.ExitCode -ne 0) { throw "Installer failed: $($p.ExitCode)" }
           $exe = Join-Path $env:LOCALAPPDATA 'OSED Forge/osed-forge.exe'
           if (!(Test-Path $exe)) { throw "Installed EXE missing: $exe" }
-          $p = Start-Process $exe -ArgumentList '--smoke-test' -Wait -PassThru
-          if ($p.ExitCode -ne 0) { throw "Application smoke test failed: $($p.ExitCode)" }
-      - name: Package downloads
+          foreach ($mode in @('--smoke-test','--ui-smoke-test')) {
+            $p = Start-Process $exe -ArgumentList $mode -PassThru
+            if (!$p.WaitForExit(120000)) { $p.Kill(); throw "Application timeout: $mode" }
+            if ($p.ExitCode -ne 0) { throw "Application failed: $mode exit $($p.ExitCode)" }
+          }
+      - name: Package downloads and checksums
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force release
           Copy-Item 'src-tauri/target/release/bundle/nsis/*-setup.exe' 'release/OSED-Forge-Setup.exe'
           Copy-Item 'src-tauri/target/release/osed-forge.exe' 'release/OSED-Forge.exe'
           Compress-Archive -Path 'labs/*' -DestinationPath 'release/OSED-Forge-Foundation-Labs.zip'
-          Compress-Archive -Path web,src-tauri/src,src-tauri/Cargo.toml,src-tauri/Cargo.lock,src-tauri/tauri.conf.json,src-tauri/build.rs,package.json,package-lock.json -DestinationPath 'release/Build-inputs.zip'
+          python scripts/package.py
           (Get-ChildItem release -File | Get-FileHash -Algorithm SHA256 | ForEach-Object { "$($_.Hash.ToLower())  $([IO.Path]::GetFileName($_.Path))" }) | Set-Content release/SHA256SUMS.txt
       - uses: actions/upload-artifact@v4
         with:
@@ -65,4 +70,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         shell: pwsh
         run: |
-          gh release create "v0.1.0-build.${{ github.run_number }}" release/* --target "${{ github.sha }}" --title "OSED Forge 0.1.0 - Windows build ${{ github.run_number }}" --prerelease --notes-file RELEASE_NOTES.md
+          $assets = (Get-ChildItem release -File).FullName
+          gh release create "v0.1.0-build.${{ github.run_number }}" @assets --target "${{ github.sha }}" --title "OSED Forge 0.1.0 - Windows build ${{ github.run_number }}" --prerelease --notes-file RELEASE_NOTES.md
+          if ($LASTEXITCODE -ne 0) { throw 'Release publishing failed' }

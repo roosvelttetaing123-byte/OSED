@@ -1,0 +1,17 @@
+node_modules/
+src-tauri/target/
+src-tauri/gen/
+src-tauri/icons/
+release/
+*.db
+*.db-*
+*.sqlite*
+*.pdf
+*.pdb
+*.obj
+*.exe
+*.ilk
+*.log
+*.backup.json
+personal/
+labs/bin/

@@ -1,0 +1,1 @@
+{"identifier":"main-window","description":"Local trusted app window only; no shell or filesystem plugin access.","windows":["main"],"permissions":["core:default"]}
