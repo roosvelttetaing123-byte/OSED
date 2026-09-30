@@ -1,51 +1,59 @@
-# OSED Forge — Windows foundation edition
-A local-first Windows study companion with a 26-week planning envelope, 13 chapter/page references, 56 original quiz questions, six generated reasoning drills, study timer and private evidence journal.
+# OSED Forge — Guided Learning 0.2
 
-## Download
-Open this repository's **Releases** page and download **OSED-Forge-Setup.exe** from a successful Windows build. Source pushes are not proof that an executable was built: the Windows workflow must pass first.
-The setup installs per-user. It may need internet to obtain Microsoft's WebView2 runtime when that runtime is missing. This is an unsigned personal prerelease; inspect its source, build logs and SHA256SUMS. Do not disable antivirus or organisational protections to run it.
+A Windows desktop teaching companion, not a PDF-reading checklist.
 
-## Start
-Open OSED Forge, visit Settings, enter your study start and realistic weekly hours, and enter the actual lab/exam dates from your account. Those fields start blank; the app never grants or extends provider access. Link your local course PDF, which remains outside this repository and is not uploaded. Begin Byte foundry in Practice bench, and open Daily review for due/unseen questions.
+**Learn → Watch → Guided → Solo → Remember → Windows practice**
 
-## What works
-- Native Tauri Windows executable, SQLite snapshot storage with optimistic revision checking and previous-state retention.
-- Course metadata, private chapter notes/stages and adjustable 26-week calendar.
-- Original quizzes with explanations and simple 1/3/7/14/30-day review scheduling, not FSRS.
-- Six generated reasoning simulations with checked mathematical answers and hints.
-- Focus timer, manual session logging, practice XP, skill recall observations and self-reported readiness checks.
-- Plain JSON backup export/import with validation and explicit replacement confirmation.
-- Optional in-app reminder while open. No startup registration or background scheduled task.
-- Separate five-program x86 foundation pack with original C source, debug symbols and instructions.
+57 original short lessons explain core concepts from the uploaded EXP-301 v1.0 syllabus. Each lesson includes an explanation, simpler analogy, worked example, checked model practice, changed solo case and a reflection. Source references are optional and scoped to the current concept. No course PDF, vendor payload or proprietary target is distributed.
 
-## Deliberate limits
-This is the **foundation edition**, not a completed six-month exploit lab fleet. Ten advanced practice entries are briefs without target binaries or automated graders. The tracker does not execute arbitrary binaries, orchestrate VMs or verify real exploit results. VM observations/checklists are self-reported and never equated with simulator results. XP is not an exam-readiness probability.
+## Install
 
-The responsive browser companion uses IndexedDB and an offline service worker when served from a suitable origin. **Phone/desktop transfer is manual JSON export/import; no live sync, cloud backend, native iOS package or push notifications are deployed.** Import replaces rather than merges journals. No AI service is bundled. The 56-question seed bank will repeat; it is not six months of unique questions.
+Download `OSED-Forge-Setup.exe` from Releases. The installer is unsigned; keep your security tools enabled and verify SHA256SUMS. WebView2 may require internet during first installation. The authored lessons work offline afterward. `OSED-Forge.exe` is the standalone application when WebView2 is already available.
 
-## Data and security
-Native progress is saved in the platform's local application-data directory for `com.osedforge.desktop` as `progress.sqlite3`; Settings displays the actual path. SQLite has current/previous snapshots and transactional writes. A second app instance cannot silently overwrite a newer revision. Export backups regularly. JSON exports contain private notes and are not encrypted; do not commit them. Close the app before making file-level DB backups, preserving WAL/SHM files when present.
-The app is not a sandbox for hostile files. Local PDF selection invokes your installed PDF viewer. No telemetry or remote account is used. Vulnerable exercises belong in disposable VMs without useful credentials; the host tracker stays separate.
+The application is Windows x64; the practice programs are Windows x86. Extract the separate `OSED-Forge-Foundation-Labs.zip` in a disposable study VM. The new `lesson_lab.exe` has memory, call, copy, branch and handled-exception modes. The app teaches its steps and expected observations one action at a time.
 
-## Build
-Install Node 22, Rust stable, Visual Studio C++ build tools and the Tauri Windows prerequisites. From the repository root:
-```
-python scripts/icon.py
-npm install --ignore-scripts
+## What this actually teaches
+
+- Addresses, values, bytes, register views, pointers, stack movement and function returns.
+- WinDbg memory displays, symbols, structures, edits, searches, breakpoints, stepping and calculations.
+- Stack corruption reasoning, offsets, input constraints, decoder workspace and SEH distinctions.
+- Static/dynamic analysis, staged buffers, page probes and portability assumptions.
+- Calling conventions, loader pointer chains, export-array lookup, rotations, byte constraints and runtime anchors.
+- Input-path analysis, DEP permissions, ROP stack accounting, call-frame layout, ASLR leaks and decoder ordering.
+- Format-string roles, observable reads, count writes, multi-byte timing and stack pivots.
+
+These are **concept lessons and deliberately simplified models**, not 57 complete native exploit labs. Five original WinDbg walkthroughs connect foundations to a real observation executable. The older five foundation programs are retained.
+
+## Honest source coverage
+
+The coverage view inventories all 375 headings in the supplied edition's table of contents, including 144 exercise/extra-mile groups. It distinguishes a related concept lesson from detailed teaching still pending and a native exercise not converted. A heading in the inventory does not mean its whole subsection has been taught, implemented or verified. Complete case-by-case conversion of the 604-page course and the advanced exploit targets remains unfinished.
+
+Original explanations preserve course terminology. Original numerical examples, models and Windows-program instructions are labelled separately. Source ambiguities (such as the string-capacity boundary or jump-offset wording) are not silently presented as authoritative corrections. Current provider access/exam policies are not inferred from the old coursebook.
+
+## Your existing progress
+
+The application identifier and `progress.sqlite3` location are unchanged. The v1 journal envelope is retained with an additional validated `teaching` field. Previous chapter notes, sessions, attempts and quizzes survive migration; they do not automatically become new lesson passes. Export a full backup before upgrading. Do not reopen the older v0.1 executable against your upgraded journal. JSON import replaces rather than merges data and requires confirmation.
+
+Learning assistance is explicit. Worked solutions, hints and repeated tries cannot be counted as a fresh first-try solo check. Free-text reflections and Windows notes are self-reported, not automatically graded. Reviews draw only from concept lessons already completed.
+
+## Develop and test
+
+```sh
 npm test
+python -m http.server 8080 --directory web
+```
+
+On Windows with the Tauri prerequisites installed:
+
+```sh
+npm install --ignore-scripts
+python scripts/icon.py
 cargo test --release --manifest-path src-tauri/Cargo.toml
 npm run desktop:build
 ```
-NSIS output is under `src-tauri/target/release/bundle/nsis/`. The application itself is `src-tauri/target/release/osed-forge.exe`. Run `labs/build.cmd` in an x86 Native Tools prompt for the separate practice programs.
-This implementation keeps Tauri and SQLite from the blueprint but uses dependency-free modular JavaScript/CSS rather than the initially proposed React/TypeScript frontend. All runtime UI content is bundled; no remote font/CDN required.
 
-## Validation
-`npm test` runs 27 learning-engine/schema/timer/content tests. Rust includes five transactional-storage tests. Windows CI compiles the x64 app and x86 foundation programs, performs safe lab self-tests, installs the package, checks persistence and exercises real WebView startup/IPC before publishing. CI log outcomes are authoritative; workflow presence alone is not a passing test.
-Linux Chromium UI interaction checks used directly injected local source with a mocked native bridge: they are not a substitute for Windows runtime testing. Manual human Windows/iPhone visual QA remains necessary.
+Build x86 observation programs by running `labs/build.cmd` from a Visual Studio x86 developer command prompt. The automated Windows workflow compiles them, runs normal-output checks, builds/installs the desktop app, checks SQLite persistence and checks actual WebView startup. No claim of complete manual Windows or iPhone QA is made.
 
-## Course mapping and references
-Metadata references the user's 604-page EXP-301 v1.0 edition (copyright2021). Chapter titles here are coaching labels. No PDF, supplied targets, course text, proprietary solutions or exam content is redistributed. Current administrative rules must be checked on OffSec's site; the app is not approved exam software and not affiliated with OffSec.
-- https://v2.tauri.app/distribute/windows-installer/
-- https://help.offsec.com/hc/en-us/articles/360052977212-OSED-Exam-Guide
-- https://docs.python.org/3/library/struct.html
-- https://learn.microsoft.com/en-us/windows-hardware/drivers/debuggercmds/debugger-commands
+## Boundaries
+
+No live AI tutor, API key, account, phone sync, background reminder service or automated exploit grader is included. The responsive UI can be previewed on mobile, but that does not synchronize your Windows database. Educational model checks are not exam-pass predictions.

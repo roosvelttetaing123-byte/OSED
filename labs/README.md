@@ -26,3 +26,9 @@ Record compiler and architecture, prediction, observed debugger state, root caus
 
 ## Building
 Use an **x86 Native Tools Command Prompt for Visual Studio**, then run `build.cmd`. The workflow selects the x86 compiler and preserves PDBs. These five programs are foundation exercises, not a complete stack/SEH/shellcode/ROP/ASLR curriculum. Advanced app entries remain practice briefs.
+
+## New guided observation lab (0.2)
+
+`lesson_lab.exe` is an original bounds-checked program with modes `memory`, `call`, `copy`, `branch`, and `seh`. Open it with the selected argument in WinDbg x86. Keep `lesson_lab.pdb` with the EXE; use the app's **Windows practice** stage for one command and expected observation at a time. Source is `lesson_lab.c`.
+
+The copy mode rejects oversized copies; it is not an exploit target. The SEH mode raises an application exception and handles it; it does not overwrite an exception handler. Compiler protections remain enabled. In the debugger, first-chance exception notification is not the same as a final unhandled crash.

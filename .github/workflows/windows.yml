@@ -71,5 +71,5 @@ jobs:
         shell: pwsh
         run: |
           $assets = (Get-ChildItem release -File).FullName
-          gh release create "v0.1.0-build.${{ github.run_number }}" @assets --target "${{ github.sha }}" --title "OSED Forge 0.1.0 - Windows build ${{ github.run_number }}" --prerelease --notes-file RELEASE_NOTES.md
+          gh release create "v0.2.0-build.${{ github.run_number }}" @assets --target "${{ github.sha }}" --title "OSED Forge 0.2.0 - Windows build ${{ github.run_number }}" --prerelease --notes-file RELEASE_NOTES.md
           if ($LASTEXITCODE -ne 0) { throw 'Release publishing failed' }

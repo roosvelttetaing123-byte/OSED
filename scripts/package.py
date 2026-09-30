@@ -4,7 +4,7 @@ from zipfile import ZipFile, ZIP_DEFLATED
 root=Path(__file__).resolve().parents[1]
 (root/'release').mkdir(exist_ok=True)
 with ZipFile(root/'release/OSED-Forge-Source.zip','w',ZIP_DEFLATED) as z:
-    for base in ['web','src-tauri','scripts','tests','labs','.github']:
+    for base in ['web','src-tauri','scripts','tests','labs','.github','docs']:
         for p in (root/base).rglob('*'):
             if p.is_file() and not set(p.relative_to(root).parts)&{'target','bin','gen','icons','__pycache__'}:
                 z.write(p,p.relative_to(root))
