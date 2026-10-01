@@ -8,6 +8,6 @@ with ZipFile(root/'release/OSED-Forge-Source.zip','w',ZIP_DEFLATED) as z:
         for p in (root/base).rglob('*'):
             if p.is_file() and not set(p.relative_to(root).parts)&{'target','bin','gen','icons','__pycache__'}:
                 z.write(p,p.relative_to(root))
-    for name in ['package.json','package-lock.json','README.md','RELEASE_NOTES.md','.gitignore']:
+    for name in ['package.json','package-lock.json','README.md','RELEASE_NOTES.md','DESIGN.md','UX-CONTRACT.md','premium-ui.json','.gitignore']:
         p=root/name
         if p.exists():z.write(p,name)

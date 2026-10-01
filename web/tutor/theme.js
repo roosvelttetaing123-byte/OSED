@@ -13,7 +13,7 @@
     root.dataset.theme = resolved;
     root.dataset.readingSize = size;
     root.style.colorScheme = resolved;
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', resolved === 'dark' ? '#191c28' : '#f5f6fa');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', resolved === 'dark' ? '#101e30' : '#f2f6f8');
     window.dispatchEvent(new CustomEvent('forge-appearance', { detail: { preference, resolved, size } }));
   };
   window.ForgeAppearance = Object.freeze({

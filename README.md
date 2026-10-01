@@ -1,4 +1,4 @@
-# OSED Forge — Study desk 0.3
+# OSED Forge — Mission desk 0.4
 
 A Windows desktop study companion that teaches one idea at a time.
 
@@ -6,7 +6,15 @@ A Windows desktop study companion that teaches one idea at a time.
 
 Download `OSED-Forge-Setup.exe` from Releases. Export a backup and close the previous app before upgrading. The app retains the same SQLite location; existing progress is preserved. The installer is unsigned. Keep security protections enabled and verify SHA256SUMS. WebView2 may need internet during setup; lessons then work offline.
 
-## A quieter place to study
+## A focused mission path
+
+The mission desk adds a visible path through each unit, 40 XP for a completed lesson, and 10 XP for its first review. Repeats do not create extra XP. The Word guide explains 20 technical terms. All 57 concept lessons use shorter, clearer explanations.
+
+Exam prep keeps practical evidence and self-checks separate from rewards. Lab notes are self-reported; no score predicts a pass. Form drafts survive navigation and reload.
+
+`python scripts/portable.py` creates `release/OSED-Forge-Study.html`, a self-contained browser edition with real IndexedDB storage and no server dependency. Keep the file in one location and use the same browser; export backups before moving it. Browser progress and the Windows SQLite database are separate; use the existing backup export/import to move progress.
+
+## Study flow
 
 Today has one recommended next lesson. New students begin with bytes and addresses, without a PDF assignment or a VM setup requirement. Opening a lesson hides the workspace navigation. Four simple stages guide you through an explanation, a stepwise example, supported and independent questions, and a short recap.
 
