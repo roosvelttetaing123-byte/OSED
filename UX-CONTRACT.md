@@ -3,7 +3,7 @@
 Sources: `docs/TEACHING_CONTRACT.md`, tutor/state.js, engine.js, and the user's October 2026 redesign brief. Visual intent lives in DESIGN.md.
 
 ## Canonical UI Map
-| Capability | Canonical owner | Source of truth | Variants | Verification |
+| Capability | Canonical owner | Source of truth | Allowed variants | Verification |
 | --- | --- | --- | --- | --- |
 | Select/Listbox | native select | app.js | OS-owned popup | browser keyboard |
 | Date | native date input | app.js settings | OS-owned popup | browser settings |
