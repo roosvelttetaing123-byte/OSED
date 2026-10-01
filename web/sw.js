@@ -1,5 +1,5 @@
-const CACHE="osed-forge-study-0.3.0";
-const FILES=["./", "./index.html", "./icon.svg", "./manifest.webmanifest", "./engine.js", "./content.js", "./tutor/app.js", "./tutor/theme.js", "./tutor/study.js", "./tutor/windows.js", "./tutor/catalog.js", "./tutor/lessons.js", "./tutor/storage.js", "./tutor/advanced.js", "./tutor/state.js", "./tutor/style.css", "./tutor/models.js", "./tutor/coverage.js"];
+const CACHE="osed-forge-study-0.4.0";
+const FILES=["./", "./index.html", "./icon.svg", "./manifest.webmanifest", "./engine.js", "./content.js", "./tutor/app.js", "./tutor/theme.js", "./tutor/study.js", "./tutor/journey.js", "./tutor/windows.js", "./tutor/catalog.js", "./tutor/lessons.js", "./tutor/storage.js", "./tutor/advanced.js", "./tutor/state.js", "./tutor/style.css", "./tutor/models.js", "./tutor/coverage.js"];
 self.addEventListener("install",e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES)).then(()=>self.skipWaiting())));
 self.addEventListener("activate",e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith("osed-forge")&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener("fetch",e=>{if(e.request.method!=="GET"||new URL(e.request.url).origin!==self.location.origin)return;e.respondWith(fetch(e.request).then(r=>{if(r.ok){const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));}return r;}).catch(()=>caches.match(e.request).then(r=>r||Response.error())));});

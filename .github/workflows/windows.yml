@@ -1,5 +1,6 @@
 name: Windows application
 on:
+  pull_request:
   workflow_dispatch:
   push:
     branches: [main]
@@ -58,6 +59,7 @@ jobs:
           Copy-Item 'src-tauri/target/release/bundle/nsis/*-setup.exe' 'release/OSED-Forge-Setup.exe'
           Copy-Item 'src-tauri/target/release/osed-forge.exe' 'release/OSED-Forge.exe'
           Compress-Archive -Path 'labs/*' -DestinationPath 'release/OSED-Forge-Foundation-Labs.zip'
+          python scripts/portable.py
           python scripts/package.py
           (Get-ChildItem release -File | Get-FileHash -Algorithm SHA256 | ForEach-Object { "$($_.Hash.ToLower())  $([IO.Path]::GetFileName($_.Path))" }) | Set-Content release/SHA256SUMS.txt
       - uses: actions/upload-artifact@v4
@@ -66,10 +68,11 @@ jobs:
           path: release/*
           if-no-files-found: error
       - name: Publish downloadable prerelease
+        if: github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: pwsh
         run: |
           $assets = (Get-ChildItem release -File).FullName
-          gh release create "v0.3.0-build.${{ github.run_number }}" @assets --target "${{ github.sha }}" --title "OSED Forge 0.3.0 - Windows build ${{ github.run_number }}" --prerelease --notes-file RELEASE_NOTES.md
+          gh release create "v0.4.0-build.${{ github.run_number }}" @assets --target "${{ github.sha }}" --title "OSED Forge 0.4.0 - Windows build ${{ github.run_number }}" --prerelease --notes-file RELEASE_NOTES.md
           if ($LASTEXITCODE -ne 0) { throw 'Release publishing failed' }

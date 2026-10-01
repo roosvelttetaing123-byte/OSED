@@ -1,0 +1,10 @@
+{
+  "profile": "product-admin",
+  "sourceRoots": ["web/tutor"],
+  "locale": "en",
+  "canonicalMap": "UX-CONTRACT.md",
+  "requiredCapabilities": ["Select/Listbox", "Date", "Form", "Scrollbar", "Toast", "CRUD"],
+  "ownership": {"Select/Listbox": "native", "Date": "native"},
+  "requiredCommands": ["unit", "syntax"],
+  "commands": {"unit": "node --test tests/*.test.js", "syntax": "node --check web/tutor/app.js"}
+}
