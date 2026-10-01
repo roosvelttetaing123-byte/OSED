@@ -1,4 +1,4 @@
-# OSED Forge â€” Study desk 0.3
+# OSED Forge — Mission desk 0.4
 
 A Windows desktop study companion that teaches one idea at a time.
 
