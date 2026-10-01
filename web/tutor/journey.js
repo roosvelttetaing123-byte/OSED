@@ -51,7 +51,7 @@ export function journey(s,today=day()){
  * relatedLabs links existing journal attempts for context, never automatic credit.
  */
 export const readinessGates=Object.freeze([
-  {id:'foundation',title:'Use the foundations',description:'Solve fresh byte, C memory and x86 tasks. Then show the same ideas in a real debugger.',relatedLabs:['F01','F02','F03','F04','F05','F06']},
+  {id:'foundation',title:'Use the foundations',description:'Solve fresh byte, C memory and x86 tasks. Then show the same ideas in a real debugger.',relatedLabs:['F01','F02','F03','F04','F05','F06','copy-observation']},
   {id:'stack',title:'Explain stack and SEH changes',description:'Work on a changed practice target. Explain the result and repeat it from a clean start.',relatedLabs:['L01','L02']},
   {id:'shellcode',title:'Build and debug your own code',description:'Debug your assembly without a solution guide. Trace how input moves through a program.',relatedLabs:['L03','L04','L08']},
   {id:'mitigations',title:'Handle protections and limits',description:'Explain ROP, ASLR and read or write limits. Check each assumption in your practice target.',relatedLabs:['L05','L06','L07']},

@@ -2,11 +2,11 @@
 
 ## Automated checks
 
-- `node --test tests/*.test.js`: 131 passed, 0 failed.
+- `node --test tests/*.test.js`: 141 passed, 0 failed, including practical-evidence save failures, draft recovery and input limits.
 - `node --check web/tutor/app.js`: passed.
 - `python scripts/portable.py`: generated a self-contained browser edition from production modules, without mock storage or test progress.
 - `designmd lint DESIGN.md`: 0 errors. The documented runtime token ownership is Model B.
-- `audit_project.py . --mode strict`: 10 actionless-button findings remain in its raw report. Manual review confirms these are a detector limitation: the checker recognizes inline click attributes, while this app uses a central document click listener and data attributes. No dummy handlers were added to suppress findings. The current sourceRoots exclude the unused legacy web/app.js. The audit is not reported as a clean pass.
+- `audit_project.py . --mode strict`: the final static review reports eight pattern findings for delegated buttons and textarea sizing. This app uses a central document click listener and data attributes. Live interaction checks verify the affected route; the static audit is not reported as a clean pass. No dummy handlers were added to suppress findings.
 
 ## Live browser verification
 
@@ -26,6 +26,8 @@ Tested the actual app served locally, using real browser IndexedDB. Test progres
 - A result labelled independent is rejected when hints were used; switching to guided saves the note.
 - Search shows an empty result state and Clear search restores the course.
 - Windows walkthroughs remain accessible from the lab library.
+- The practical copy mission opens from the Windows lab library. Evidence drafts survive stage changes and reload. Independent status with hints is rejected; an assisted note saves in recent history without adding XP.
+- All four practical stages navigate correctly; the saved note survives reload. At a 320px viewport, the mission and expanded evidence form fit without horizontal page overflow (310px content and scroll widths).
 - Home and reader checked at 390px width, with no page horizontal overflow. Home also checked at 320px after adjusting the header and lesson-stage labels; the page and labels fit without horizontal overflow.
 - A handled validation error is logged by the app during the deliberate invalid-evidence check; it is not an uncaught startup failure.
 
@@ -36,6 +38,10 @@ The existing Python Playwright harness has updated selectors, but was not run in
 Windows compilation, installer, native persistence and WebView smoke checks run in the PR's Windows application job. Check the exact commit's result before calling its installer verified. PR builds upload artifacts and do not publish a release.
 
 Advanced native exploit targets are still incomplete. XP, model exercises and self-reported checks cannot establish an exam pass prediction.
+
+## Foundation lab evidence
+
+The existing x86 foundation programs compiled on Windows with protections enabled. Their ordinary self-checks ran successfully. CDB hit the copy-mode checkpoint and showed result `1` and destination bytes `41 42 43 44 45 46 47 00`. This was a host-side check of the existing bounded-copy exercise, not a guest-VM test or advanced exploit validation. The intentional crash mode was not run on the host. Exact-capacity input (eight bytes) is explicitly untested by the supplied copy-mode calls.
 
 ## Source grounding
 
