@@ -26,7 +26,7 @@ Tested the actual app served locally, using real browser IndexedDB. Test progres
 - A result labelled independent is rejected when hints were used; switching to guided saves the note.
 - Search shows an empty result state and Clear search restores the course.
 - Windows walkthroughs remain accessible from the lab library.
-- Home and reader checked at 390px width, with no page horizontal overflow.
+- Home and reader checked at 390px width, with no page horizontal overflow. Home also checked at 320px after adjusting the header and lesson-stage labels; the page and labels fit without horizontal overflow.
 - A handled validation error is logged by the app during the deliberate invalid-evidence check; it is not an uncaught startup failure.
 
 ## Limits
